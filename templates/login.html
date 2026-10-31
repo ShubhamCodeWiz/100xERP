@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Sign in{% endblock %}
+{% block body_class %}page-login{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ asset('css/login.css') }}">{% endblock %}
+
+{% block content %}
+<section class="login-wrap">
+  <div class="login-card card">
+    <div class="login-head">
+      <h1>100x ERP</h1>
+      <p class="muted">Sign in to continue</p>
+    </div>
+    <form id="login-form" class="login-form" novalidate>
+      <label class="field">
+        <span>User ID</span>
+        <input id="user_id" name="user_id" type="text" autocomplete="username" autocapitalize="none"
+               spellcheck="false" maxlength="64" required data-label="User ID" data-autofocus>
+      </label>
+      <label class="field">
+        <span>Password</span>
+        <input id="password" name="password" type="password" autocomplete="current-password"
+               maxlength="128" required data-label="Password">
+      </label>
+      <button type="submit" id="login-submit" class="btn btn-primary btn-block">Sign in</button>
+    </form>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}<script src="{{ asset('js/login.js') }}"></script>{% endblock %}

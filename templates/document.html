@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Document{% endblock %}
+{% block head %}
+<style>
+  .gen-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: 1rem; }
+  .gen-bar h1 { margin: .25rem 0 0; font-size: 1.25rem; }
+  .gen-actions { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+  .gen-status { font-size: .85rem; margin: 0 0 .75rem; color: var(--muted, #64748b); min-height: 1.2em; white-space: pre-wrap; }
+  .gen-status.ok { color: #16a34a; }
+  .gen-status.error { color: #dc2626; }
+  .gen-notice { margin: 0 0 .75rem; padding: .7rem .9rem; border-radius: 8px; border: 1px solid #e0b84a; background: rgba(224, 184, 74, .15); font-size: .85rem; }
+  .viewer-box { border: 1px solid var(--border, #cbd5e1); border-radius: 10px; overflow: hidden; background: #fff; }
+  .viewer-box iframe { display: block; width: 100%; height: 72vh; min-height: 420px; border: 0; }
+  .gen-placeholder { padding: 2rem; text-align: center; color: #94a3b8; }
+  details.src { margin-top: 1rem; }
+  details.src summary { cursor: pointer; font-weight: 600; }
+  details.src textarea { width: 100%; height: 320px; margin-top: .75rem; padding: .75rem; font-family: Consolas, "JetBrains Mono", monospace; font-size: 13px; line-height: 1.5; border: 1px solid var(--border, #cbd5e1); border-radius: 8px; resize: vertical; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="gen-bar">
+  <div>
+    <a id="doc-back" class="link" href="/performance">&larr; Back to dashboard</a>
+    <h1 id="gen-title">Document</h1>
+  </div>
+  <div class="gen-actions">
+    <button type="button" id="gen-pdf" class="btn btn-primary" disabled>Download PDF</button>
+    <button type="button" id="gen-tex" class="btn" disabled>Download .tex</button>
+    <button type="button" id="gen-open" class="btn" disabled>Open in new tab</button>
+    <button type="button" id="gen-retry" class="btn" disabled>Regenerate PDF</button>
+    <button type="button" id="gen-texlive" class="btn" hidden>Open via texlive.net</button>
+  </div>
+</div>
+
+<p id="gen-status" class="gen-status" role="status">Loading&hellip;</p>
+<p id="gen-notice" class="gen-notice" role="status" hidden></p>
+
+<div class="viewer-box">
+  <p id="gen-placeholder" class="gen-placeholder">Preparing your document&hellip;</p>
+  <iframe id="viewer" title="PDF preview" hidden></iframe>
+</div>
+
+<details class="src">
+  <summary>LaTeX source (the same file as the .tex download)</summary>
+  <textarea id="tex-source" spellcheck="false" readonly></textarea>
+</details>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ asset('js/doc-latex.js') }}"></script>
+<script src="{{ asset('js/doc-pdf.js') }}"></script>
+<script src="{{ asset('js/doc-compile.js') }}"></script>
+<script src="{{ asset('js/document.js') }}"></script>
+{% endblock %}

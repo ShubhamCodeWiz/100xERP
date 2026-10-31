@@ -1,0 +1,99 @@
+{
+  "users": {
+    "raju": {
+      "id": "raju",
+      "name": "raju",
+      "email": "r@ju.com",
+      "role": "intern",
+      "department": "Trainingg",
+      "description": "",
+      "password_hash": "f966a7a2af159da4d0c290174f80ac1e82bbae1f80cbf5018ba7c3e058093943",
+      "password_enc": "e0VdUkZR",
+      "created_at": "2026-10-30T04:42:55Z",
+      "created_by": "admin",
+      "created_by_name": "Administrator",
+      "last_edited_at": "2026-10-31T01:56:01Z",
+      "last_edited_by": "admin",
+      "last_edited_by_name": "Administrator"
+    }
+  },
+  "tasks": {
+    "raju": [
+      {
+        "id": "b3bb44b0a8af437f82275ebae5da77b5",
+        "title": "Train intern abc",
+        "details": "Train them on git and fast api",
+        "due_date": "2026-10-30",
+        "status": "completed",
+        "remarks": "",
+        "assigned_by": "admin",
+        "assigned_by_name": "Administrator",
+        "assigned_at": "2026-10-30T04:43:56Z",
+        "completed_at": "2026-10-30T05:20:46Z",
+        "last_edited_at": "2026-10-30T05:20:46Z",
+        "last_edited_by": "admin",
+        "last_edited_by_name": "Administrator"
+      }
+    ]
+  },
+  "promotions": {
+    "raju": [
+      {
+        "from_role": "executive",
+        "to_role": "employee",
+        "changed_at": "2026-10-30T05:10:59Z",
+        "changed_by": "admin",
+        "changed_by_name": "Administrator"
+      },
+      {
+        "from_role": "employee",
+        "to_role": "intern",
+        "changed_at": "2026-10-30T05:11:10Z",
+        "changed_by": "admin",
+        "changed_by_name": "Administrator"
+      },
+      {
+        "from_role": "intern",
+        "to_role": "employee",
+        "changed_at": "2026-10-30T05:11:51Z",
+        "changed_by": "admin",
+        "changed_by_name": "Administrator"
+      },
+      {
+        "from_role": "employee",
+        "to_role": "intern",
+        "changed_at": "2026-10-30T05:18:22Z",
+        "changed_by": "admin",
+        "changed_by_name": "Administrator"
+      },
+      {
+        "from_role": "intern",
+        "to_role": "employee",
+        "changed_at": "2026-10-30T05:20:25Z",
+        "changed_by": "admin",
+        "changed_by_name": "Administrator"
+      },
+      {
+        "from_role": "employee",
+        "to_role": "intern",
+        "promoted_by": "admin",
+        "promoted_by_name": "Administrator",
+        "promoted_at": "2026-10-31T01:49:13Z"
+      },
+      {
+        "from_role": "intern",
+        "to_role": "employee",
+        "promoted_by": "admin",
+        "promoted_by_name": "Administrator",
+        "promoted_at": "2026-10-31T01:50:01Z"
+      },
+      {
+        "from_role": "employee",
+        "to_role": "intern",
+        "promoted_by": "admin",
+        "promoted_by_name": "Administrator",
+        "promoted_at": "2026-10-31T01:56:01Z"
+      }
+    ]
+  }
+}

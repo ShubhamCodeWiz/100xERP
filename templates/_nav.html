@@ -1,0 +1,14 @@
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="/panel">100x<span>ERP</span></a>
+    <nav class="topbar-links" aria-label="Main">
+      <a href="/panel" class="{% if active == 'panel' %}active{% endif %}">Panel</a>
+      <a href="/performance" id="nav-performance" class="{% if active == 'performance' %}active{% endif %}">My dashboard</a>
+    </nav>
+    <div class="topbar-user">
+      <span id="nav-user-name" class="user-name"></span>
+      <span id="nav-user-role" class="badge"></span>
+      <button type="button" id="logout-btn" class="btn btn-small">Log out</button>
+    </div>
+  </div>
+</header>

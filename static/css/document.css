@@ -1,0 +1,56 @@
+/* Printable letter (A4 portrait) and certificate (30 x 20 cm landscape).
+   The paper always uses its own light colours, whatever theme the app is in. */
+
+.doc-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.sheet-wrap { display: flex; justify-content: center; overflow: hidden; }
+
+.sheet {
+  --main: #1f3b73; --accent: #c9a227; --paper: #ffffff; --light: #f5f7fb;
+  position: relative; flex: 0 0 auto;
+  background: var(--paper); color: #1a1a1a;
+  box-shadow: 0 2px 18px rgba(0, 0, 0, .25);
+  font-family: Georgia, "Times New Roman", serif; line-height: 1.55;
+  transform-origin: top center;
+}
+.sheet h1, .sheet h2, .sheet p { margin: 0; }
+.sheet .brand-name { color: var(--main); font-weight: 700; letter-spacing: .35em; text-align: center; padding-left: .35em; }
+.sheet .brand-addr { color: var(--main); font-style: italic; text-align: center; }
+.sheet .sig-line { border-top: 1px solid #1a1a1a; width: 6.5cm; margin-bottom: 4px; }
+
+/* ----- letter ----- */
+.sheet-letter { width: 210mm; height: 297mm; padding: 22mm; font-size: 11.5pt; display: flex; flex-direction: column; gap: 10pt; }
+.sheet-letter .brand-name { font-size: 24pt; }
+.sheet-letter .brand-addr { font-size: 10pt; margin-top: 4pt; }
+.sheet-letter .rule { height: 0; border-top: .8pt solid var(--main); margin: 8pt 0 4pt; }
+.sheet-letter .issue-date { text-align: right; }
+.sheet-letter .salutation { font-weight: 700; font-variant: small-caps; font-size: 14pt; margin: 8pt 0 2pt; }
+.sheet-letter .resp { white-space: pre-wrap; padding-left: 1.2cm; }
+.sheet-letter .verify-note { font-size: 9.5pt; color: #444; overflow-wrap: anywhere; }
+.sheet-letter .signature { margin-top: auto; }
+
+/* ----- certificate ----- */
+.sheet-cert { width: 300mm; height: 200mm; background: var(--light); font-size: 13pt; text-align: center; }
+.sheet-cert .frame { position: absolute; inset: 5.5mm; border: 2.5pt solid var(--main); }
+.sheet-cert .frame-inner { position: absolute; inset: 8.5mm; border: 1pt solid var(--accent); }
+.sheet-cert .head { position: absolute; top: 15mm; left: 0; right: 0; }
+.sheet-cert .brand-name { font-size: 30pt; }
+.sheet-cert .brand-addr { font-size: 11pt; margin-top: 6pt; }
+.sheet-cert .divider { position: absolute; top: 40mm; left: 50%; width: 90mm; margin-left: -45mm; border-top: 1pt solid var(--accent); }
+.sheet-cert .title { position: absolute; top: 48mm; left: 0; right: 0; color: var(--accent); font-size: 40pt; font-weight: 700; letter-spacing: .06em; }
+.sheet-cert .subtitle { position: absolute; top: 69mm; left: 0; right: 0; font-size: 16pt; font-variant: small-caps; }
+.sheet-cert .body { position: absolute; top: 84mm; left: 62mm; width: 200mm; display: grid; gap: 10pt; }
+.sheet-cert .body .name { font-size: 17pt; font-weight: 700; }
+.sheet-cert .qr-box { position: absolute; left: 18mm; bottom: 19mm; width: 36mm; font-size: 8pt; }
+.sheet-cert .qr-box svg { display: block; width: 36mm; height: 36mm; margin-bottom: 4pt; }
+.sheet-cert .cert-id { position: absolute; right: 18mm; bottom: 19mm; text-align: right; font-size: 11pt; }
+.sheet-cert .cert-id small { font-size: 8.5pt; }
+.sheet-cert .signature { position: absolute; right: 18mm; bottom: 40mm; text-align: center; font-size: 11pt; }
+.sheet-cert .signature .sig-line { margin-left: auto; margin-right: auto; }
+
+@media print {
+  html, body { background: #fff !important; overflow: visible !important; }
+  .topbar, .subnav-bar, .doc-toolbar, .toast-root, .overlay { display: none !important; }
+  .page { padding: 0 !important; max-width: none !important; }
+  .sheet-wrap { display: block; overflow: visible; }
+  .sheet { zoom: 1 !important; box-shadow: none; margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

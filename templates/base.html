@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}ERP{% endblock %} · 100x ERP</title>
+  {# theme.js runs first so the saved theme is applied before the page paints #}
+  <script src="/static/js/theme.js"></script>
+  <link rel="stylesheet" href="/static/css/style.css">
+  {% block head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  {% if show_nav %}{% include "_nav.html" %}{% endif %}
+
+  <!-- Sub-nav bar placed directly below top nav bar with inline onclick handler -->
+  <aside class="subnav-bar">
+    <div class="subnav-inner">
+      <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle dark theme" aria-pressed="false" title="Toggle dark theme">
+        <svg class="icon icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="currentColor"/>
+        </svg>
+        <svg class="icon icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.5" fill="currentColor"/>
+          <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+        </svg>
+        <span class="theme-toggle-label">Theme</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="page">
+    {% block content %}{% endblock %}
+  </main>
+
+  {% block overlays %}{% endblock %}
+
+  {# ---- shared overlays: errors, confirmations, toasts ---- #}
+  <div id="error-overlay" class="overlay overlay-top" role="alertdialog" aria-modal="true"
+       aria-labelledby="error-title" aria-describedby="error-message" data-backdrop-close hidden>
+    <div class="dialog dialog-error">
+      <h2 id="error-title" data-error-title>Something went wrong</h2>
+      <p id="error-message" class="dialog-message" data-error-message></p>
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-primary" data-close>OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="confirm-overlay" class="overlay overlay-top" role="alertdialog" aria-modal="true"
+       aria-labelledby="confirm-title" aria-describedby="confirm-message" hidden>
+    <div class="dialog">
+      <h2 id="confirm-title" data-confirm-title>Please confirm</h2>
+      <p id="confirm-message" class="dialog-message" data-confirm-message></p>
+      <div class="dialog-actions">
+        <button type="button" class="btn" data-close>Cancel</button>
+        <button type="button" class="btn btn-primary" data-confirm-yes>Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-root" class="toast-root" aria-live="polite"></div>
+
+  <script src="/static/js/common.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
+

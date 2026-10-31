@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Verify document{% endblock %}
+
+{% block head %}
+<style>
+  .verify {
+    --v-bg: #ffffff; --v-soft: #f4f6fb; --v-line: #e2e7f1; --v-text: #14213d; --v-mute: #64708a;
+    --v-ok: #15803d; --v-ok-bg: #e7f6ec; --v-bad: #b42318; --v-bad-bg: #fdeceb; --v-accent: #1f3b73; --v-gold: #c9a227;
+    max-width: 560px; margin: 2rem auto; color: var(--v-text);
+  }
+  :root[data-theme="dark"] .verify {
+    --v-bg: #172033; --v-soft: #1d2940; --v-line: #2b3957; --v-text: #e8edf7; --v-mute: #93a0bb;
+    --v-ok: #5fd08a; --v-ok-bg: #12301f; --v-bad: #ff8a80; --v-bad-bg: #3a1a18; --v-accent: #9db7f5;
+  }
+  .verify-card { background: var(--v-bg); border: 1px solid var(--v-line); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 28px rgba(20, 33, 61, .08); }
+  .verify-top { padding: 2rem 1.5rem 1.5rem; text-align: center; border-bottom: 3px solid var(--v-gold); }
+  .verify-top.ok { background: var(--v-ok-bg); }
+  .verify-top.bad { background: var(--v-bad-bg); }
+  .verify-mark { width: 64px; height: 64px; margin: 0 auto 1rem; border-radius: 50%; display: grid; place-items: center; background: var(--v-bg); border: 2px solid currentColor; }
+  .verify-top.ok .verify-mark { color: var(--v-ok); }
+  .verify-top.bad .verify-mark { color: var(--v-bad); }
+  .verify-mark svg { width: 32px; height: 32px; }
+  .verify-top h1 { margin: 0; font-size: 1.5rem; letter-spacing: .01em; }
+  .verify-top p { margin: .4rem 0 0; color: var(--v-mute); font-size: .95rem; }
+  .verify-kind { display: inline-block; margin-top: .75rem; padding: .2rem .7rem; border-radius: 999px; background: var(--v-bg); border: 1px solid var(--v-line); color: var(--v-accent); font-size: .75rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+  .verify-name { padding: 1.5rem 1.5rem .5rem; text-align: center; }
+  .verify-name .label { font-size: .75rem; color: var(--v-mute); text-transform: uppercase; letter-spacing: .08em; }
+  .verify-name .value { margin-top: .25rem; font-size: 1.6rem; font-weight: 700; color: var(--v-accent); }
+  .verify-rows { margin: 0; padding: .5rem 1.5rem 1.5rem; display: grid; gap: .6rem; }
+  .verify-rows div { display: flex; justify-content: space-between; gap: 1rem; padding: .7rem .9rem; background: var(--v-soft); border-radius: 10px; }
+  .verify-rows dt { color: var(--v-mute); font-size: .85rem; }
+  .verify-rows dd { margin: 0; font-weight: 600; text-align: right; word-break: break-word; }
+  .verify-foot { padding: 1rem 1.5rem; border-top: 1px solid var(--v-line); text-align: center; color: var(--v-mute); font-size: .8rem; }
+  .verify-bad-body { padding: 1.5rem; text-align: center; color: var(--v-mute); }
+  .verify-bad-body code { color: var(--v-text); background: var(--v-soft); padding: .15rem .45rem; border-radius: 6px; }
+  @media (max-width: 480px) { .verify-rows div { flex-direction: column; gap: .15rem; } .verify-rows dd { text-align: left; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="verify" aria-live="polite">
+  {% if doc %}
+  <article class="verify-card">
+    <div class="verify-top ok">
+      <div class="verify-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+      </div>
+      <h1>Document verified</h1>
+      <p>This document matches a record held by 100X Club.</p>
+      <span class="verify-kind">{{ "Internship certificate" if doc.type == "internship_certificate" else "Experience letter" }}</span>
+    </div>
+
+    <div class="verify-name">
+      <div class="label">Issued to</div>
+      <div class="value">{{ doc.name }}</div>
+    </div>
+
+    <dl class="verify-rows">
+      <div><dt>Designation</dt><dd>{{ doc.designation }}</dd></div>
+      <div><dt>Started</dt><dd>{{ doc.start }}</dd></div>
+      <div><dt>Time on record</dt><dd>{{ doc.span }}</dd></div>
+      <div><dt>Reference</dt><dd>{{ cert_label }}</dd></div>
+    </dl>
+
+    <div class="verify-foot">Checked on {{ doc.checked_on }}</div>
+  </article>
+  {% else %}
+  <article class="verify-card">
+    <div class="verify-top bad">
+      <div class="verify-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </div>
+      <h1>Not found</h1>
+      <p>We could not match this document to any record.</p>
+    </div>
+    <div class="verify-bad-body">
+      <p>No document with reference <code>{{ cert_label }}</code> exists. It may have been withdrawn, or the link was copied incorrectly.</p>
+    </div>
+  </article>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,38 @@
+/* Login page: layout and structure only.
+   Colours, typography, inputs and buttons come from style.css. */
+
+.page-login .page {
+  display: grid;
+  max-width: none;
+  padding: 0;
+}
+
+.login-wrap {
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 380px;
+  display: grid;
+  gap: 24px;
+  padding: 28px;
+}
+
+.login-head {
+  display: grid;
+  gap: 4px;
+  text-align: center;
+}
+
+.login-head h1,
+.login-head p {
+  margin: 0;
+}
+
+.login-form {
+  display: grid;
+  gap: 16px;
+}

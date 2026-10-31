@@ -1,0 +1,49 @@
+/* Theme handling, shared by every page.
+   Loaded in <head> (before first paint) so there is no light/dark flash.
+   The choice is saved in localStorage; with no saved choice the OS preference is used.
+   This file is the ONLY place that handles the toggle button. */
+(function () {
+  'use strict';
+  var KEY = 'erp-theme';
+
+  function saved() {
+    try { return localStorage.getItem(KEY); } catch (e) { return null; }
+  }
+
+  function preferred() {
+    var s = saved();
+    if (s === 'dark' || s === 'light') return s;
+    var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return dark ? 'dark' : 'light';
+  }
+
+  function syncButton(theme) {
+    var btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    btn.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+    var label = btn.querySelector('.theme-toggle-label');
+    if (label) label.textContent = theme === 'dark' ? 'Light mode' : 'Dark mode';
+  }
+
+  function apply(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    syncButton(theme);
+  }
+
+  window.ERPTheme = {
+    get: function () { return document.documentElement.getAttribute('data-theme') || preferred(); },
+    set: function (theme) {
+      try { localStorage.setItem(KEY, theme); } catch (e) { /* storage unavailable */ }
+      apply(theme);
+    },
+    toggle: function () { this.set(this.get() === 'dark' ? 'light' : 'dark'); }
+  };
+
+  apply(preferred());
+
+  // One delegated listener: works whenever the button appears in the DOM.
+  document.addEventListener('click', function (e) {
+    if (e.target.closest && e.target.closest('#theme-toggle')) window.ERPTheme.toggle();
+  });
+  document.addEventListener('DOMContentLoaded', function () { syncButton(window.ERPTheme.get()); });
+})();
