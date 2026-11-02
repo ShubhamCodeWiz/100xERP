@@ -29,13 +29,13 @@ JWT_ALGORITHM = "HS256"
 JWT_EXPIRE_MINUTES = int(os.getenv("ERP_JWT_EXPIRE_MINUTES", "480"))
 
 COMPANY_NAME = "100X Club"
-COMPANY_ADDRESS = "Agentic AI"
+COMPANY_ADDRESS = "Agentic AI Division · Uttarakhand, India"
 SIGNATORY_NAME = "Sagar Singh"
 SIGNATORY_TITLE = "Head of Human Resources"
 HR_EMAIL = "hr@100x.club"
 
 PUBLIC_BASE_URL = os.getenv("ERP_PUBLIC_URL", "").rstrip("/")
-BUILD = "2026.10.30-r5"
+BUILD = "2026.11.02-pbc1"
 
 LOGIN_MAX_FAILURES = 5
 LOGIN_WINDOW_SECONDS = 300
