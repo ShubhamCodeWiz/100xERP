@@ -6,6 +6,7 @@
 <div class="page-head">
   <div>
     <a id="back-link" class="link" href="/panel" hidden>&larr; Back to panel</a>
+    <p class="eyebrow">Operations overview</p>
     <h1 id="perf-title">Performance dashboard</h1>
     <p class="muted" id="perf-subtitle"></p>
   </div>
@@ -35,6 +36,7 @@
 <section class="card" aria-label="Assigned tasks container">
   <div class="card-head">
     <h2>Assigned tasks</h2>
+    <span class="card-head-note">Live task status</span>
   </div>
   <div id="task-grid" class="user-grid" style="margin-top: 1rem;"></div>
   <p id="task-empty" class="empty" hidden>No tasks have been assigned yet.</p>
@@ -54,7 +56,7 @@
 </section>
 
 <section class="card" id="documents-section" hidden>
-  <h2>Documents</h2>
+  <div class="card-head"><h2>Documents</h2><span class="card-head-note">Files &amp; records</span></div>
   <p><a id="generate-doc" class="btn btn-primary" href="#" hidden>Generate document (PDF)</a></p>
   <form id="upload-form" class="upload-form" novalidate hidden>
     <label class="field grow">

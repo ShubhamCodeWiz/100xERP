@@ -5,6 +5,7 @@
 {% block content %}
 {# Employees and interns have no directory: only a shortcut to their own dashboard. #}
 <section id="self-section" class="card" hidden>
+  <p class="eyebrow">Workspace</p>
   <h1>Welcome, <span id="self-name"></span></h1>
   <p class="muted">Your assigned tasks, remarks and documents are on your dashboard.</p>
   <a class="btn btn-primary" href="/performance">Open my dashboard</a>
@@ -13,13 +14,14 @@
 <section id="directory" hidden>
   <div class="page-head">
     <div>
+      <p class="eyebrow">Organization</p>
       <h1>People</h1>
       <p class="muted" id="result-count" aria-live="polite"></p>
     </div>
     <button type="button" id="add-user" class="btn btn-primary" hidden>Add person</button>
   </div>
 
-  <div class="toolbar card">
+  <div class="toolbar card" aria-label="Directory filters">
     <label class="field grow">
       <span class="sr-only">Search</span>
       <input id="search" type="search" placeholder="Search by name, ID, email or department" autocomplete="off">
