@@ -291,6 +291,8 @@
     ROLE_LABELS: ROLE_LABELS,
     STATUS_LABELS: STATUS_LABELS,
     FLASH_KEY: FLASH_KEY,
+    decodeJwt: decodeJwt,
+    localCapabilities: localCapabilities,
     h: h, token: token, api: api, download: download, requireAuth: requireAuth, signOut: signOut,
     openOverlay: openOverlay, closeOverlay: closeOverlay,
     showError: showError, report: report, confirmDialog: confirmDialog, toast: toast,

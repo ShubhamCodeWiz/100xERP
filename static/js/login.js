@@ -17,10 +17,13 @@
   if (flash) {
     ERP.showError(flash, 'Signed out');
   } else if (ERP.token.get()) {
-    // Already signed in? Skip the form if the saved token is still good.
-    ERP.api('/api/auth/me', { redirect401: false })
-      .then(function () { location.replace('/panel'); })
-      .catch(function () { ERP.token.clear(); });
+    // Already signed in? Decode the JWT locally and redirect instantly without waiting for /api/auth/me.
+    var me = ERP.localCapabilities(ERP.decodeJwt(ERP.token.get()));
+    if (me) {
+      location.replace('/panel');
+    } else {
+      ERP.token.clear();
+    }
   }
 
   form.addEventListener('submit', async function (e) {
