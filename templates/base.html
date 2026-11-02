@@ -6,9 +6,9 @@
   <title>{% block title %}ERP{% endblock %} · 100x ERP</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   {# theme.js runs first so the saved theme is applied before the page paints #}
-  <script src="/static/js/theme.js"></script>
+  <script src="{{ asset('js/theme.js') }}"></script>
   <link rel="stylesheet" href="{{ asset('css/style.css') }}">
   {% block head %}{% endblock %}
 </head>
@@ -55,7 +55,7 @@
 
   <div id="toast-root" class="toast-root" aria-live="polite"></div>
 
-  <script src="/static/js/common.js"></script>
+  <script src="{{ asset('js/common.js') }}"></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

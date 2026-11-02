@@ -35,7 +35,7 @@ SIGNATORY_TITLE = "Head of Human Resources"
 HR_EMAIL = "hr@100x.club"
 
 PUBLIC_BASE_URL = os.getenv("ERP_PUBLIC_URL", "").rstrip("/")
-BUILD = "2026.11.02-perf1"
+BUILD = "2026.11.02-aurora1"
 
 LOGIN_MAX_FAILURES = 5
 LOGIN_WINDOW_SECONDS = 300
