@@ -34,6 +34,7 @@
   var editing = null;
   var revealed = null;   // password text fetched with "Show" (so we only send it if changed)
   var latest = 0;
+  var usersList = [];
   var enc = encodeURIComponent;
 
   els.directory.hidden = false;
@@ -53,7 +54,10 @@
     if (els.roleFilter.value) params.set('role', els.roleFilter.value);
     try {
       var users = await ERP.api('/api/users' + (params.toString() ? '?' + params : ''));
-      if (mine === latest) render(users);
+      if (mine === latest) {
+        usersList = users;
+        render(usersList);
+      }
     } catch (err) {
       if (mine === latest) ERP.report(err, 'Could not load people');
     }
@@ -63,6 +67,13 @@
     els.grid.replaceChildren.apply(els.grid, users.map(card));
     els.empty.hidden = users.length > 0;
     els.count.textContent = users.length === 1 ? '1 person' : users.length + ' people';
+  }
+
+  function sortUsers() {
+    var order = { executive: 0, employee: 1, intern: 2 };
+    usersList.sort(function (a, b) {
+      return (order[a.role] - order[b.role]) || a.name.localeCompare(b.name);
+    });
   }
 
   function meta(label, value) {
@@ -189,16 +200,20 @@
         if (body.role && saved.role !== body.role) {
           throw new Error('The server did not apply the role change. Restart the server so it loads the latest files, then try again.');
         }
+        usersList = usersList.map(function (user) { return user.id === saved.id ? saved : user; });
         ERP.toast(body.role ? 'Role changed to ' + ERP.ROLE_LABELS[body.role] : 'Changes saved');
       } else {
         body.user_id = f['user_id'].value;
         body.role = f['role'].value;
         body.password = password;
-        await ERP.api('/api/users', { method: 'POST', body: body });
+        var created = await ERP.api('/api/users', { method: 'POST', body: body });
+        usersList.push(created);
         ERP.toast('Person added');
       }
+      latest++;
+      sortUsers();
+      render(usersList);
       ERP.closeOverlay(els.overlay);
-      await load();
     } catch (err) {
       ERP.report(err, 'Could not save');
     } finally {
@@ -215,8 +230,10 @@
     if (!ok) return;
     try {
       await ERP.api('/api/users/' + enc(u.id), { method: 'DELETE' });
+      latest++;
+      usersList = usersList.filter(function (user) { return user.id !== u.id; });
+      render(usersList);
       ERP.toast('Person deleted');
-      await load();
     } catch (err) {
       ERP.report(err, 'Could not delete');
     }

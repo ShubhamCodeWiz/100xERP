@@ -1,11 +1,12 @@
-/* LaTeX -> PDF with a fallback chain that always ends in a PDF.
-   Exposes window.DocCompile.compile(tex, options) -> Promise<{ bytes, via, exact, problems }>
+/* Fast local PDF rendering plus opt-in LaTeX HD compilation.
+   Exposes window.DocCompile.renderFast(data) and compileHd(tex, options).
 
-     1. browser -> texlive.net, latex.ytotech.com and latexonline.cc, all at once; first valid PDF wins
+     1. renderFast() -> built-in renderer: immediate, offline and zero-network
+     2. browser -> texlive.net, latex.ytotech.com and latexonline.cc, all at once; first valid PDF wins
         (needs those services to allow cross-origin reads, which they may not)
-     2. browser -> this server (/api/latex/compile), which relays the same source to the services
+     3. browser -> this server (/api/latex/compile), which relays the same source to the services
         server-to-server, where CORS does not apply
-     3. built-in renderer (doc-pdf.js): same document drawn from the same data, needs no network
+     4. built-in renderer (doc-pdf.js): final fallback if an explicit HD request fails
 
    `exact` is true when the PDF was compiled from the LaTeX source (steps 1-2).
    Nothing is trusted until its first bytes read "%PDF-". */
@@ -111,7 +112,12 @@
     throw lastError;
   }
 
-  async function compile(tex, options) {
+  function renderFast(data) {
+    if (!root.DocPdf || !data) throw new Error('built-in renderer is not available');
+    return { bytes: root.DocPdf.build(data), via: 'the built-in renderer', exact: false, problems: [] };
+  }
+
+  async function compileHd(tex, options) {
     options = options || {};
     var say = options.onStatus || function () {};
     var problems = [];
@@ -134,9 +140,9 @@
 
     say('LaTeX services unreachable, using the built-in renderer…');
     try {
-      if (!root.DocPdf || !options.data) throw new Error('built-in renderer is not available');
-      var bytes = root.DocPdf.build(options.data);
-      return { bytes: bytes, via: 'the built-in renderer', exact: false, problems: problems };
+      var fast = renderFast(options.data);
+      fast.problems = problems;
+      return fast;
     } catch (err) {
       problems.push('built-in renderer: ' + (err && err.message));
       var failure = new Error('The PDF could not be produced.\n' + problems.join('\n'));
@@ -145,5 +151,6 @@
     }
   }
 
-  root.DocCompile = { compile: compile, isPdf: isPdf };
+  // `compile` remains an alias for existing callers; startup uses renderFast instead.
+  root.DocCompile = { renderFast: renderFast, compileHd: compileHd, compile: compileHd, isPdf: isPdf };
 })(typeof window !== 'undefined' ? window : globalThis);

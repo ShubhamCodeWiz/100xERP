@@ -244,4 +244,68 @@
     w.strokeColor(LINE).lineWidth(0.8).line(M, y, W - M, y);
     y += 26;
 
-    w.text('STATEMENT OF EMPLOYMENT & EXPERIENCE', M, y, { font: 'F2', size: 13, color: INK, spacing: 0.5
+    w.text('STATEMENT OF EMPLOYMENT & EXPERIENCE', M, y, { font: 'F2', size: 13, color: INK, spacing: 0.5 });
+    y += 20;
+
+    // Compact identity and tenure summary.
+    var cols = [M, M + width * .27, M + width * .53, M + width * .78];
+    var labels = ['EMPLOYEE NAME', 'DESIGNATION', 'TENURE PERIOD', 'TOTAL DURATION'];
+    var values = [d.name, d.designation, d.start + ' - ' + d.end, d.span];
+    w.fillColor(BGSOFT).strokeColor(LINE).lineWidth(.6).rect(M, y, width, 58, 'FS');
+    for (var i = 0; i < labels.length; i++) {
+      w.text(labels[i], cols[i] + 10, y + 16, { font: 'F2', size: 6.5, color: MUTE, spacing: .65 });
+      w.text(values[i], cols[i] + 10, y + 34, { font: 'F2', size: i === 0 ? 10 : 8.5, color: INK });
+      if (i) w.strokeColor(LINE).lineWidth(.45).line(cols[i], y + 10, cols[i], y + 48);
+    }
+    y += 84;
+
+    function paragraph(text, font, size, color, gap) {
+      var lines = wrapRuns([{ t: text, f: font || 'F1' }], width, size || 10.5);
+      lines.forEach(function (line) { drawRunLine(w, line, M, y, size || 10.5, color || SLATE); y += (size || 10.5) * 1.55; });
+      y += gap || 8;
+    }
+
+    paragraph('This record formally certifies that ' + d.name + ' was employed with ' + d.company_name +
+      ' in the capacity of ' + d.designation + (d.department ? ' (' + d.department + ' Department)' : '') +
+      ' from ' + d.start + ' to ' + d.end + '.', 'F1', 10.5, SLATE, 10);
+    paragraph('Throughout this engagement, ' + d.name + ' contributed to core engineering and product initiatives within our Agentic AI division, demonstrating high technical ownership, reliability, and professional ethics.', 'F1', 10.5, SLATE, 12);
+
+    var responsibilities = String(d.description || '').split(/\r?\n/).map(function (item) { return item.trim(); }).filter(Boolean);
+    if (responsibilities.length) {
+      w.text('ROLE SCOPE & RESPONSIBILITIES', M, y, { font: 'F2', size: 8, color: SLATE, spacing: .7 });
+      y += 17;
+      responsibilities.slice(0, 7).forEach(function (item) {
+        paragraph('•  ' + item, 'F1', 9.5, SLATE, 2);
+      });
+      y += 6;
+    }
+
+    var tasks = d.assigned_tasks || [];
+    if (tasks.length && y < H - 190) {
+      w.text('KEY DELIVERABLES & PROJECTS EXECUTED', M, y, { font: 'F2', size: 8, color: SLATE, spacing: .7 });
+      y += 17;
+      tasks.slice(0, 10).forEach(function (task) {
+        paragraph('•  ' + task.title, 'F1', 9.5, SLATE, 2);
+      });
+      if (d.assigned_more) paragraph('+ ' + d.assigned_more + ' additional project' + (d.assigned_more === 1 ? '' : 's') + ' logged in ERP.', 'F3', 8.5, MUTE, 4);
+    }
+
+    var footerY = Math.max(y + 18, H - 135);
+    w.strokeColor(LINE).lineWidth(.6).line(M, footerY, W - M, footerY);
+    w.strokeColor(INK).lineWidth(.65).line(M, footerY + 45, M + 148, footerY + 45);
+    w.text(d.signatory_name, M, footerY + 62, { font: 'F2', size: 10, color: INK });
+    w.text(d.signatory_title, M, footerY + 77, { font: 'F1', size: 8.5, color: SLATE });
+    w.text(d.company_name + '  ·  ' + d.hr_email, M, footerY + 91, { font: 'F1', size: 7.5, color: MUTE });
+    if (d.qr && d.qr.length) {
+      drawQr(w, d.qr, W - M - 58, footerY + 18, 52);
+      w.text('Scan to verify this record', W - M, footerY + 82, { font: 'F1', size: 6.5, color: MUTE, align: 'right' });
+    }
+    return w.output('Experience Letter - ' + d.name);
+  }
+
+  function build(d) {
+    return d.kind === 'internship_certificate' ? certificate(d) : letter(d);
+  }
+
+  root.DocPdf = { build: build };
+})(typeof window !== 'undefined' ? window : globalThis);

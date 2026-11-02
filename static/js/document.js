@@ -75,24 +75,22 @@
     els.holder.hidden = true;
     els.frame.hidden = false;
     els.frame.src = result.url;
-    els.retry.textContent = result.exact ? 'Regenerate PDF' : 'Try LaTeX again';
-    els.texlive.hidden = result.exact;
-    els.notice.hidden = result.exact;
+    els.retry.textContent = 'Compile via LaTeX (HD)';
+    els.texlive.hidden = true;
+    els.notice.hidden = true;
     if (result.exact) {
       setStatus('Ready. Compiled from the LaTeX source by ' + result.via + '.', 'ok');
     } else {
-      els.notice.textContent = 'The online LaTeX compilers could not be reached, so this PDF was drawn by the built-in renderer. ' +
-        'It has the same design and the same content. Press “Try LaTeX again” later, or “Open via texlive.net” to compile the source yourself.';
-      setStatus('Ready (built-in renderer).', 'ok');
+      setStatus('Ready. Rendered instantly with the built-in PDF engine.', 'ok');
     }
   }
 
-  /* One generation at a time; every caller gets the same result. */
-  function generate() {
+  /* LaTeX is intentionally opt-in: document startup uses renderFast below. */
+  function generateHd() {
     if (running) return running;
     lock(true);
-    setStatus('Preparing the PDF…');
-    running = window.DocCompile.compile(tex, {
+    setStatus('Compiling the high-definition LaTeX PDF…');
+    running = window.DocCompile.compileHd(tex, {
       data: data,
       token: ERP.token.get,
       onStatus: function (m) { setStatus(m); }
@@ -114,7 +112,7 @@
 
   /* ---------- buttons ---------- */
   els.pdf.addEventListener('click', async function () {
-    var result = current || await generate();
+    var result = current || renderFast();
     if (result) saveBlob(new Blob([result.bytes], { type: 'application/pdf' }), baseName + '.pdf');
   });
   els.tex.addEventListener('click', function () {
@@ -123,7 +121,7 @@
   els.open.addEventListener('click', function () {
     if (current) window.open(current.url, '_blank');
   });
-  els.retry.addEventListener('click', function () { generate(); });
+  els.retry.addEventListener('click', function () { generateHd(); });
 
   /* Manual route, same technique as the standalone page: POST the source to texlive.net in a new tab. */
   els.texlive.addEventListener('click', function () {
@@ -146,5 +144,19 @@
   });
 
   els.tex.disabled = false;
-  generate();
+  function renderFast() {
+    try {
+      var result = window.DocCompile.renderFast(data);
+      show(result);
+      els.pdf.disabled = false;
+      els.open.disabled = false;
+      els.retry.disabled = false;
+      return result;
+    } catch (err) {
+      setStatus('The PDF could not be produced. The .tex file can still be downloaded.', 'error');
+      ERP.report(err, 'Could not produce the PDF');
+      return null;
+    }
+  }
+  renderFast();
 })();

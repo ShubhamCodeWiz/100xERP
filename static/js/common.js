@@ -204,20 +204,57 @@
   }
 
   /* ---------- page guard + top bar ---------- */
-  async function requireAuth() {
-    if (!token.get()) {
+  function decodeJwt(tokenValue) {
+    try {
+      var part = tokenValue.split('.')[1];
+      if (!part) return null;
+      var padded = part.replace(/-/g, '+').replace(/_/g, '/');
+      padded += '==='.slice((padded.length + 3) % 4);
+      var binary = atob(padded);
+      var bytes = new Uint8Array(binary.length);
+      for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      return JSON.parse(new TextDecoder().decode(bytes));
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function localCapabilities(payload) {
+    var rules = {
+      admin: { can_view_directory: true, viewable_roles: ['executive', 'employee', 'intern'], creatable_roles: ['executive', 'employee', 'intern'] },
+      executive: { can_view_directory: true, viewable_roles: ['executive', 'employee', 'intern'], creatable_roles: ['employee', 'intern'] },
+      employee: { can_view_directory: false, viewable_roles: [], creatable_roles: [] },
+      intern: { can_view_directory: false, viewable_roles: [], creatable_roles: [] }
+    };
+    var rule = rules[payload && payload.role];
+    if (!rule || !payload.sub || !payload.name || !payload.exp || payload.exp * 1000 <= Date.now()) return null;
+    return {
+      id: payload.sub,
+      name: payload.name,
+      role: payload.role,
+      email: payload.email || '',
+      can_view_directory: rule.can_view_directory,
+      viewable_roles: rule.viewable_roles.slice(),
+      creatable_roles: rule.creatable_roles.slice()
+    };
+  }
+
+  function requireAuth() {
+    var savedToken = token.get();
+    var me = localCapabilities(decodeJwt(savedToken || ''));
+    if (!me) {
+      token.clear();
       location.replace('/login');
       return new Promise(function () {});   // never resolves: stops the page script
     }
-    var me = await api('/api/auth/me');
     var nameEl = document.getElementById('nav-user-name');
     var roleEl = document.getElementById('nav-user-role');
     var perfLink = document.getElementById('nav-performance');
     var logoutBtn = document.getElementById('logout-btn');
     if (nameEl) nameEl.textContent = me.name;
     if (roleEl) { roleEl.textContent = ROLE_LABELS[me.role] || me.role; roleEl.className = 'badge badge-' + me.role; }
-    if (perfLink && me.role === 'admin') perfLink.hidden = true;   // the built-in admin has no dashboard of its own
-    if (logoutBtn) logoutBtn.addEventListener('click', function () { signOut(); });
+    if (perfLink) perfLink.hidden = me.role === 'admin';   // the built-in admin has no dashboard of its own
+    if (logoutBtn) logoutBtn.onclick = function () { signOut(); };
     return me;
   }
 
